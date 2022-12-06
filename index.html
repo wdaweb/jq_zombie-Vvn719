@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js'
+    integrity='sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=='
+    crossorigin='anonymous'></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+  <title>Document</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Chewy&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+
+    body {
+      background-color: #EFE3C1;
+      font-family: 'Ma Shan Zheng', cursive;
+    }
+
+    #bg img {
+      width: 900px;
+      position: absolute;
+      top: 44.5%;
+      left: 49.5%;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+    }
+
+    #game {
+      width: 700px;
+      height: 700px;
+      position: absolute;
+      top: 45%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      /* background: url(./images/asiafoodhot-small-01-01-01.png) no-repeat; */
+      /* background-color: #EEA824; */
+      border-radius: 50%;
+      z-index: 2;
+      overflow: hidden;
+      cursor: url(./images/asiafoodhot-point-01.png) 50 0, auto;
+    }
+
+    .point {
+      cursor: url(./images/asiafoodhot-point-02.png) 50 0, auto;
+    }
+
+
+    img {
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    #btn-start {
+      display: block;
+      position: absolute;
+      bottom: 10px;
+      left: 45%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50px;
+      border: 0;
+      background-color: #EEA824;
+      border: 8px solid #765D43;
+      color: white;
+      font-family: 'Chewy', cursive;
+      font-size: 1.8rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    #btn-reset {
+      display: block;
+      position: absolute;
+      bottom: 10px;
+      left: 55%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50px;
+      border: 0;
+      background-color: #EEA824;
+      border: 8px solid #765D43;
+      color: white;
+      font-family: 'Chewy', cursive;
+      font-size: 1.8rem;
+      text-align: center;
+      cursor: pointer;
+    }
+
+
+
+    #score {
+      position: absolute;
+      bottom: -140px;
+      right: 5%;
+      transform: translate(-50%, -50%);
+      font-size: 36px;
+    }
+
+    #bgtext {
+      position: absolute;
+      top: 5%;
+      left: 8%;
+      font-size: 150px;
+      writing-mode: vertical-lr;
+      line-height: 10rem;
+      z-index: 1;
+    }
+
+    #bgtext img {
+      position: absolute;
+      top: 85%;
+      left: 60%;
+      z-index: -1;
+      width: 150px;
+    }
+
+    #allfood {
+      width: 180px;
+      position: absolute;
+      top: 300px;
+      right: 6%;
+      transform: translate(-50%, -50%);
+      font-size: 50px;
+      color: rgb(151, 0, 0);
+      background-color: rgba(255, 251, 228, 0.5);
+      text-align: center;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    #allfood img {
+      width: 35px;
+      height: 40px;
+      margin-bottom: 0.5rem;
+    }
+
+    .ate {
+      pointer-events: none;
+      visibility: hidden
+    }
+  </style>
+</head>
+
+<body>
+  <input type="button" value="START" id="btn-start">
+  <input type="button" value="RESET" id="btn-reset">
+  <br>
+  <div id="content">
+    <span id="bgtext">
+      <img src="./images/asiafoodhot-small-20.png">
+      立冬吃爆<br>好吃一直吃</span>
+    <span id="bg">
+      <img src="./images/asiafoodhot-bg-03.png" alt="">
+    </span>
+    <div id="game">
+      <img src="./images/asiafoodhot-bg-02.png" alt="火鍋子">
+    </div>
+    <div id="allfood">
+      <img src="./images/asiafoodhot-small-14.png"> - 1 分<br>
+      <img src="./images/asiafoodhot-small-07.png"> + 1 分<br>
+      <img src="./images/asiafoodhot-small-16.png"> + 1 分<br>
+      <img src="./images/asiafoodhot-small-17.png"> + 1 分<br>
+      <img src="./images/asiafoodhot-small-18.png"> + 2 分<br>
+      <img src="./images/asiafoodhot-small-05.png"> + 3 分<br>
+      <img src="./images/asiafoodhot-small-12.png"> + 5 分<br>
+      <img src="./images/asiafoodhot-small-10.png"> + 5 分<br>
+    </div>
+
+    <div id="score">
+      <p>我吃了: <span id="text-score">0</span> 分</p>
+      <p>剩下: <span id="text-time">0</span> 秒</p>
+      <p>高手饕客: <span id="text-highScorename">沒有</span></p>
+      <p>最高吃: <span id="text-highScore">0</span> 分</p>
+    </div>
+  </div>
+  <script>
+    let score = 0
+    let countdown = 0
+    let timer = 0
+    // const storage = JSON.parse(localStorage.getItem('eat'))
+    const highScore = localStorage.eat ? JSON.parse(localStorage.eat) : { name: '沒有', score: 0 }
+    $('#text-highScorename').text(highScore.name)
+    $('#text-highScore').text(highScore.score)
+
+
+
+    function move(food01) {
+      const top = Math.ceil(Math.random() * 100) + '%'
+      const left = Math.ceil(Math.random() * 100) + '%'
+      food01.stop().animate({ top, left }, 2000, function () {
+        if ($('#btn-start').attr('disabled') === 'disabled') {
+          move(food01)
+        }
+      })
+    }
+
+
+    $('#btn-start').click(function () {
+      $(this).attr('disabled', true)
+      score = 0
+      $('#text-score').text(score)
+      countdown = 30
+      $('#text-time').text(countdown)
+
+
+      timer = setInterval(function () {
+        countdown--
+        $('#text-time').text(countdown)
+
+
+        // 隨機生成 1~10 數字
+        const random = Math.ceil(Math.random() * 10)
+        // 如果隨機的數字大於3 則生成物件
+        if (random < 4) {
+          // 0~100 位置
+          const top = Math.ceil(Math.random() * 100) + '%'
+          // 0~100 位置
+          const left = Math.ceil(Math.random() * 100) + '%'
+          const food01 = $(`<img src="./images/asiafoodhot-small-04.png" class="food01" style="position:absolute;top:${top};left:${left}">`)
+          $('#game').append(food01)
+          move(food01)
+
+          const food02 = $(`<img src="./images/asiafoodhot-small-14.png" class="food01" style="position:absolute;bottom:${top};left:${left}">`)
+          $('#game').append(food02)
+          move(food02)
+
+          const food10 = $(`<img src="./images/asiafoodhot-small-15.png" class="food01" style="position:absolute;bottom:${top};left:${left}">`)
+          $('#game').append(food10)
+          move(food10)
+        } else if (random > 5) {
+          // 0~100 位置
+          const top = Math.ceil(Math.random() * 100) + '%'
+          // 0~100 位置
+          const left = Math.ceil(Math.random() * 100) + '%'
+          const food03 = $(`<img src="./images/asiafoodhot-small-06.png" class="food02" style="position:absolute;top:${top};left:${left}">`)
+          $('#game').append(food03)
+          move(food03)
+
+          const food04 = $(`<img src="./images/asiafoodhot-small-07.png" class="food02" style="position:absolute;top:${top};right:${left}">`)
+          $('#game').append(food04)
+          move(food04)
+
+          const food05 = $(`<img src="./images/asiafoodhot-small-17.png" class="food02" style="position:absolute;top:${top};right:${left}">`)
+          $('#game').append(food05)
+          move(food05)
+
+          const food09 = $(`<img src="./images/asiafoodhot-small-16.png" class="food02" style="position:absolute;top:${top};right:${left}">`)
+          $('#game').append(food09)
+          move(food09)
+
+          const food11 = $(`<img src="./images/asiafoodhot-small-18.png" class="food02" style="position:absolute;top:${top};right:${left}">`)
+          $('#game').append(food11)
+          move(food11)
+        } else {
+          // 0~100 位置
+          const top = Math.ceil(Math.random() * 100) + '%'
+          // 0~100 位置
+          const left = Math.ceil(Math.random() * 100) + '%'
+          const food06 = $(`<img src="./images/asiafoodhot-small-10.png" class="food04" style="position:absolute;top:${top};left:${left}">`)
+          $('#game').append(food06)
+          move(food06)
+
+          const food07 = $(`<img src="./images/asiafoodhot-small-12.png" class="food03" style="position:absolute;top:${top};right:${left}">`)
+          $('#game').append(food07)
+          move(food07)
+
+          const food08 = $(`<img src="./images/asiafoodhot-small-11.png" class="food04" style="position:absolute;top:${top};left:${left}">`)
+          $('#game').append(food08)
+          move(food08)
+        }
+
+
+
+
+        if (countdown === 0) {
+          clearInterval(timer)
+          // $('#game img').remove()
+          $('.food01').remove()
+          $('.food02').remove()
+          $('.food03').remove()
+          $('.food04').remove()
+          // 重新啟用開始按鈕
+          $('#btn-start').attr('disabled', false)
+
+
+
+          if (score > highScore.score) {
+            Swal.fire({
+              title: '請輸入姓名',
+              input: 'text',
+              text: `冬天吃到${score}分飽到爆`,
+              imageUrl: './images/4778777.jpg',
+              imageWidth: 400,
+              imageHeight: 400,
+              imageAlt: '好吃一直吃我真的吃爆',
+              inputAttributes: {
+                required: true
+              },
+              validationMessage: ('輸入姓名'),
+              allowOutsideClick: false,
+              allowEscapeKey: false
+            }).then(result => {
+              highScore.score = score
+              highScore.name = result.value
+              $('#text-highScorename').text(highScore.name)
+              $('#text-highScore').text(highScore.score)
+              localStorage.eat = JSON.stringify(highScore)
+            })
+            // setItem 只能放文字
+            // localStorage.setItem('eat', JSON.stringify(highScore))
+          } else {
+            Swal.fire({
+              title: '好飽!',
+              text: `過了一個${score}分飽的冬天`,
+              imageUrl: './images/4778777.jpg',
+              imageWidth: 400,
+              imageHeight: 400,
+              imageAlt: '好吃一直吃',
+            })
+          }
+        }
+      }, 1000)
+
+    })
+
+    $('#btn-reset').click(function () {
+      clearInterval(timer)
+      countdown = 0
+      $('#text-time').text(countdown)
+      $('.food01').remove()
+      $('.food02').remove()
+      $('.food03').remove()
+      $('.food04').remove()
+      $('#btn-start').attr('disabled', false)
+    })
+
+    $('#game').on('click', '.food01', function () {
+      $(this).stop()
+      $(this).removeClass('food01').addClass('ate')
+      score--
+      $('#text-score').text(score)
+    })
+
+
+    $('#game').on('click', '.food02', function () {
+      $(this).stop()
+      $(this).removeClass('food02').addClass('ate')
+      score++
+      $('#text-score').text(score)
+    })
+
+    $('#game').on('click', '.food03', function () {
+      $(this).stop()
+      $(this).removeClass('food03').addClass('ate')
+      score += 3
+      $('#text-score').text(score)
+    })
+
+    $('#game').on('click', '.food04', function () {
+      $(this).stop()
+      $(this).removeClass('food04').addClass('ate')
+      score += 5
+      $('#text-score').text(score)
+    })
+
+
+  </script>
+  <script src="./jquery-3.6.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+
+</html>
